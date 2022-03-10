@@ -1,0 +1,17 @@
+.p-3{
+    padding: 20px;
+}
+.p-l{
+    padding-left: 10px;
+}
+.p-r{
+    padding-right: 10px;
+}
+.row{
+    display: flex;
+}
+.success{
+    background-color: black;
+    color: green;
+}
+
