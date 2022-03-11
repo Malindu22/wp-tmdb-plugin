@@ -14,16 +14,16 @@ Domain Path:
 add_action( 'admin_menu' , 'TMDB_Movie');
 
 function TMDB_Movie(){
-    $page_title = 'TMDB Movie Impoter';
-    $menu_title = 'Movie-import';
-    $capability = 'manage_options';
-    $menu_slug  = 'admin.php';
-    $function   = 'Counter_pagina_inhoud';
+    $__page_title = 'TMDB Movie Impoter';
+    $__menu_title = 'Movie-import';
+    $__capability = 'manage_options';
+    $__menu_slug  = 'admin.php';
+    $__function   = '__mg__init__';
 
-    add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function );
+    add_menu_page( $__page_title, $__menu_title, $__capability, $__menu_slug, $__function );
 }
 
-function Counter_pagina_inhoud(){
+function __mg__init__(){
     require_once plugin_dir_path( __FILE__ ) . 'admin.php';
     wp_enqueue_style('stylesheet', plugins_url('css/style.css',__FILE__ ));
 }
