@@ -3,7 +3,9 @@ $default__tab = null;
 $__tab = isset($_GET['tab']) ? $_GET['tab'] : $default__tab;
 /// Tmdb Api key 
 global $API_KEY;
+global $__mg__page;
 $API_KEY = 'fe820d7cf8a922a22d399cad5db275cc';
+$__mg__page = 1;
 // $API_KEY = get_option($tmdb);
 add_action( 'template_redirect', 'wpse149613_form_process' );
 ?>
@@ -95,10 +97,15 @@ add_action( 'template_redirect', 'wpse149613_form_process' );
  <?php 
 function  __mg__movie__cont() { 
   global $API_KEY;
+  global $__mg__page;
+  $__mg__page = 0;
+  if (isset($_POST['__mo__page'])) {
+    $__mg__page = $_POST['__mo__page'] + 1;
+  }
   ?>
    <div class="wrap">
     <h2>Import</h2> 
-    <form method="post" action="?page=admin.php">
+    <form method="post" id="mov__form" name='mov__form' action="?page=admin.php">
     <div class="row">
       <div class="p-3">
       <select id="cars">
@@ -111,10 +118,13 @@ function  __mg__movie__cont() {
       </div>
       <div class="p-3">
         <input type="text" placeholder="Search Name" name="__mo__name" id="__mo__name">
-        <input type="hidden" value="1" placeholder="Search Name" name="__mo__page" id="__mo__page">
       </div>
       <div class="p-3">
         <input type="submit" value="Search" name="submit" id="submit" class="button button-primary" />
+        <input type="hidden" value="<?php echo $__mg__page ?>" name="__mo__page" id="__mo__page" class="button button-primary" />
+      </div>
+      <div class="p-3">
+        <a href="javascript:{}" onclick="document.getElementById('submit').click();"><button class="button button-primary"><?php echo ($__mg__page == 0) ?  'Load'  : 'Next'; ?></button></a>
       </div>
     </div>
     </form>
@@ -124,7 +134,6 @@ function  __mg__movie__cont() {
 
 if (isset($_POST['__mov__year']) && isset($_POST['__mo__name'])) {
   // $url = 'https://api.themoviedb.org/3/search/movie?api_key=fe820d7cf8a922a22d399cad5db275cc&query=Jack+Reacher';
-  $__mg__page = $_POST['__mo__page'];
   $url = 'https://api.themoviedb.org/3/trending/all/day?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&page='.$__mg__page;
   $data = array();
   $args = array(
@@ -148,6 +157,7 @@ if (isset($_POST['__mov__year']) && isset($_POST['__mo__name'])) {
   echo $_POST['__mov__year'];
   echo $_POST['__mo__name'];
   echo $url;
+  // echo $_GET['no'];
   echo '</div>';
   // echo $API_KEY;
   // use key 'http' even if you send the request to https://...
