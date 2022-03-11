@@ -2,7 +2,9 @@
 $default__tab = null;
 $__tab = isset($_GET['tab']) ? $_GET['tab'] : $default__tab;
 /// Tmdb Api key 
+global $API_KEY;
 $API_KEY = 'fe820d7cf8a922a22d399cad5db275cc';
+// $API_KEY = get_option($tmdb);
 add_action( 'template_redirect', 'wpse149613_form_process' );
 ?>
 <!-- Our admin page content should all be inside .wrap -->
@@ -11,7 +13,7 @@ add_action( 'template_redirect', 'wpse149613_form_process' );
   <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
   <!-- Here are our tabs -->
   <nav class="nav-tab-wrapper">
-    <a href="?page=admin.php" class="nav-tab <?php if($__tab===null):?>nav-tab-active<?php endif; ?>">Default Tab</a>
+    <a href="?page=admin.php" class="nav-tab <?php if($__tab===null):?>nav-tab-active<?php endif; ?>">Import Tab</a>
     <a href="?page=admin.php&tab=settings" class="nav-tab <?php if($__tab==='settings'):?>nav-tab-active<?php endif; ?>">Settings</a>
     <a href="?page=admin.php&tab=tools" class="nav-tab <?php if($__tab==='tools'):?>nav-tab-active<?php endif; ?>">Tools</a>
   </nav>
@@ -39,7 +41,7 @@ add_action( 'template_redirect', 'wpse149613_form_process' );
       // echo 'Tools'.var_dump($categories);
       break;
     default:
-      echo 'Default tab';
+      __mg__movie__cont();
       break;
   endswitch; ?>
   </div>
@@ -89,4 +91,84 @@ add_action( 'template_redirect', 'wpse149613_form_process' );
 }
 
 ?>
+ 
+ <?php 
+function  __mg__movie__cont() { 
+  global $API_KEY;
+  ?>
+   <div class="wrap">
+    <h2>Import</h2> 
+    <form method="post" action="?page=admin.php">
+    <div class="row">
+      <div class="p-3">
+      <select id="cars">
+        <option value="mov">Movie</option>
+        <option value="tv">Tv show</option>
+      </select>
+      </div>
+      <div class="p-3">
+        <input type="text" placeholder="Year" name="__mov__year" id="__mov__year">
+      </div>
+      <div class="p-3">
+        <input type="text" placeholder="Search Name" name="__mo__name" id="__mo__name">
+        <input type="hidden" value="1" placeholder="Search Name" name="__mo__page" id="__mo__page">
+      </div>
+      <div class="p-3">
+        <input type="submit" value="Search" name="submit" id="submit" class="button button-primary" />
+      </div>
+    </div>
+    </form>
+  </div>
 
+<?php  
+
+if (isset($_POST['__mov__year']) && isset($_POST['__mo__name'])) {
+  // $url = 'https://api.themoviedb.org/3/search/movie?api_key=fe820d7cf8a922a22d399cad5db275cc&query=Jack+Reacher';
+  $__mg__page = $_POST['__mo__page'];
+  $url = 'https://api.themoviedb.org/3/trending/all/day?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&page='.$__mg__page;
+  $data = array();
+  $args = array(
+    'headers' => array( "Content-type" => "application/json" )
+  );
+  // get req
+  $result = wp_remote_get( $url, $args );
+  // post req
+  // wp_remote_post()
+  $response_code = wp_remote_retrieve_response_message( $result );
+  $response = wp_remote_retrieve_body($result);
+  $response = json_decode($response);
+  if ($response_code == 'OK') {
+    // print("<pre>".print_r($response,true)."</pre>");
+  }
+  // $array = json_decode(json_encode($response), true);
+  echo '<div class="d-flex-wrap">';
+  foreach ($response->results as $mv) {
+    echo '<div class="wrap"><img src="https://image.tmdb.org/t/p/w92/'.$mv->poster_path.'"/></div>';
+  }
+  echo $_POST['__mov__year'];
+  echo $_POST['__mo__name'];
+  echo $url;
+  echo '</div>';
+  // echo $API_KEY;
+  // use key 'http' even if you send the request to https://...
+  // $options = array(
+  //     'http' => array(
+  //         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+  //         'method'  => 'POST',
+  //         'content' => http_build_query($data)
+  //     )
+  // );
+  // $context  = stream_context_create($options);
+  // $result = file_get_contents($url, false, $context);
+  // if ($result === FALSE) { /* Handle error */ }
+  
+  // print_r($response_code);
+  // print_r(json_decode($response));
+  // print_r($response);
+    }
+
+
+}
+
+
+?>

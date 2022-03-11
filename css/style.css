@@ -10,8 +10,15 @@
 .row{
     display: flex;
 }
+.d-flex-wrap{
+    display: flex;
+    flex-wrap: wrap;
+}
 .success{
     background-color: black;
     color: green;
+}
+.m-1{
+    margin: 10px;
 }
 
