@@ -108,9 +108,9 @@ function  __mg__movie__cont()
             <option value="tv">Tv show</option>
           </select>
         </div>
-        <div class="p-3">
+        <!-- <div class="p-3">
           <input type="text" placeholder="Year" name="__mov__year" id="__mov__year">
-        </div>
+        </div> -->
         <div class="p-3">
           <input type="text" placeholder="Search Name" name="__mo__name" id="__mo__name">
         </div>
@@ -127,19 +127,17 @@ function  __mg__movie__cont()
 
 <?php
 
-  if (isset($_POST['__mov__year']) && isset($_POST['__mo__name'])) {
-    
+  if (isset($_POST['__mo__name'])) {
     // https://api.themoviedb.org/3/search/movie?api_key=ssss&query=query&page=1&include_adult=false&region=region&year=year&primary_release_year=primary_release_year
     // https://api.themoviedb.org/3/search/tv?api_key=ssss&page=1&include_adult=false
     // https://api.themoviedb.org/3/search/multi?api_key=ssss&query=query&page=1&include_adult=false&region=region
     // $url = 'https://api.themoviedb.org/3/search/movie?api_key=fe820d7cf8a922a22d399cad5db275cc&query=Jack+Reacher';
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/trending/all/day?api_key=fe820d7cf8a922a22d399cad5db275cc' . '&page=' . $__mg__page;
-    $__popular_mv_url = 'https://api.themoviedb.org/3/search/multi?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&query='.$_POST['__mo__name'] . '&page=' . $__mg__page.'&include_adult=true&language=ta';
+    $__popular_mv_url = 'https://api.themoviedb.org/3/trending/all/day?api_key=fe820d7cf8a922a22d399cad5db275cc' . '&page=' . $__mg__page;
+    // $__popular_mv_url = 'https://api.themoviedb.org/3/search/multi?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&query='.$_POST['__mo__name'] . '&page=' . $__mg__page.'&include_adult=true&language=ta';
     // $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'].'?api_key=fe820d7cf8a922a22d399cad5db275cc&external_source=imdb_id';
     // $__popular_mv_url = 'https://api.themoviedb.org/3/discover/movie?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&with_original_language=te&year=2019' . '&page=' . $__mg__page;
-    // if (!empty($_POST['__mov__year']) && !empty($_POST['__mo__name'])) {
-    //   // $__popular_mv_url = '';
-    //   echo 'not empty';
+    // if (empty($_POST['__mo__name'])) {
+    //   $__popular_mv_url = 'https://api.themoviedb.org/3/find/'+$_POST['__mo__name'] +'?api_key=fe820d7cf8a922a22d399cad5db275cc&language=en-US&external_source=imdb_id';
     // }
     $__header_args = array(
       'headers' => array("Content-type" => "application/json")
@@ -151,11 +149,24 @@ function  __mg__movie__cont()
     if ($response_code == 'OK') {
       // print("<pre>".print_r($response,true)."</pre>");
         echo '<div class="d-flex-wrap">';
-      foreach ($response->results as $mv) {
-        echo '<div class="wrap"><a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a></div>';
-        // echo 'set';
-      }
-      echo $_POST['__mov__year'];
+        if (!$response->results) {
+          if (!$response->results) {
+            
+          } 
+        }else{
+          foreach ($response->results as $mv) {
+            echo '<div class="wrap">';
+            if ($mv->poster_path) {
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
+            }else{
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
+            }
+            // 
+            echo '</div>';
+          }
+        }
+      
+      // echo $_POST['__mov__year'];
       echo $_POST['__mo__name'];
       echo '</div>';
     }
@@ -165,8 +176,8 @@ function  __mg__movie__cont()
 
 
   //////////////////////////////  one movie eka ganna   ////////////////////////
-  if ($_GET['mv_id']) {
-    echo $_GET['mv_id'];
+  if (!empty($_GET['mv_id'])) {
+    // echo $_GET['mv_id'];
     $__single__mv_url = 'https://api.themoviedb.org/3/movie/' . $_GET['mv_id'] . '?api_key=fe820d7cf8a922a22d399cad5db275cc';
     $args = array(
       'headers' => array("Content-type" => "application/json")
