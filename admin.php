@@ -136,9 +136,9 @@ function  __mg__movie__cont()
     // $__popular_mv_url = 'https://api.themoviedb.org/3/search/multi?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&query='.$_POST['__mo__name'] . '&page=' . $__mg__page.'&include_adult=true&language=ta';
     // $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'].'?api_key=fe820d7cf8a922a22d399cad5db275cc&external_source=imdb_id';
     // $__popular_mv_url = 'https://api.themoviedb.org/3/discover/movie?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&with_original_language=te&year=2019' . '&page=' . $__mg__page;
-    // if (empty($_POST['__mo__name'])) {
-    //   $__popular_mv_url = 'https://api.themoviedb.org/3/find/'+$_POST['__mo__name'] +'?api_key=fe820d7cf8a922a22d399cad5db275cc&language=en-US&external_source=imdb_id';
-    // }
+    if (!empty($_POST['__mo__name'])) {
+      $__popular_mv_url = 'https://api.themoviedb.org/3/find/'+$_POST['__mo__name'] +'?api_key=fe820d7cf8a922a22d399cad5db275cc&language=en-US&external_source=imdb_id';
+    }
     $__header_args = array(
       'headers' => array("Content-type" => "application/json")
     );
@@ -150,14 +150,28 @@ function  __mg__movie__cont()
       // print("<pre>".print_r($response,true)."</pre>");
         echo '<div class="d-flex-wrap">';
         if (!$response->results) {
-          if (!$response->results) {
-            
-          } 
+          if (!$response->movie_results &&  !empty($response->movie_results)) {
+            $__response_result = $response->movie_results;
+          }else if(!$response->tv_results &&  !empty($response->tv_results)) {
+            $__response_result = $response->tv_results;
+          }else{
+            echo '<h2> No Data Found </h2>';
+            return;
+          }
+          foreach ($__response_result as $mv) {
+            echo '<div class="wrap">';
+            if ($mv->poster_path) {
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
+            }else{
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
+            }
+            echo '</div>';
+          }
         }else{
           foreach ($response->results as $mv) {
             echo '<div class="wrap">';
             if ($mv->poster_path) {
-              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
+              // echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
               echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
             }
@@ -168,6 +182,7 @@ function  __mg__movie__cont()
       
       // echo $_POST['__mov__year'];
       echo $_POST['__mo__name'];
+      echo $__popular_mv_url;
       echo '</div>';
     }
     
