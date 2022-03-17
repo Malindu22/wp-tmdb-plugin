@@ -215,7 +215,7 @@ function  __mg__movie__cont()
       $__cat__mv__full = array();
       foreach ($response->genres as $one_mv_cat) {
         foreach ($categories as $category) {
-          if ($one_mv_cat->name == $category->name) {
+          if ($one_mv_cat->id == $category->id) {
             $__cat__mv__name[] = $one_mv_cat->name;
             $__cat__mv__full[] = $one_mv_cat;
           }
@@ -225,6 +225,7 @@ function  __mg__movie__cont()
         if (!in_array($object->name, $__cat__mv__name)) {
           $__str_rpc = str_replace(' ', '-', $object->name);
           $__add__mv__cat = array(
+            'cat_ID' => $object->id,
             'cat_name' => $object->name,
             'category_description' => 'Movie Categary',
             'category_nicename' => $__str_rpc,
@@ -236,15 +237,15 @@ function  __mg__movie__cont()
       }
 
       //get categary again to add post
-      $__re__categories = get_categories($args);
-      $__cat__mv__to_post = array();
-      foreach ($response->genres as $one_mv_cat) {
-        foreach ($__re__categories as $category) {
-          if ($one_mv_cat->name == $category->name) {
-            $__cat__mv__to_post[] = $one_mv_cat->id;
-          } 
-        }
-      }
+      // $__re__categories = get_categories($args);
+      // $__cat__mv__to_post = array();
+      // foreach ($response->genres as $one_mv_cat) {
+      //   foreach ($__re__categories as $category) {
+      //     if ($one_mv_cat->name == $category->name) {
+      //       $__cat__mv__to_post[] = $one_mv_cat->id;
+      //     } 
+      //   }
+      // }
 
 
       print("<pre>" . print_r($response, true) . "</pre>");
