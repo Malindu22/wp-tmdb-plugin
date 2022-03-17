@@ -148,12 +148,14 @@ function  __mg__movie__cont()
     $response = json_decode($response);
     if ($response_code == 'OK') {
       // print("<pre>".print_r($response,true)."</pre>");
+      $__type__m_t = 'movie';
         echo '<div class="d-flex-wrap">';
         if (!property_exists($response,'results')) {
           if (property_exists($response,'movie_results') &&  !empty($response->movie_results)) {
             $__response_result = $response->movie_results;
           }else if(property_exists($response,'tv_results') &&  !empty($response->tv_results)) {
             $__response_result = $response->tv_results;
+            $__type__m_t = 'tv';
           }else{
             echo '<h2> No Data Found </h2>';
             return;
@@ -194,7 +196,8 @@ function  __mg__movie__cont()
   //////////////////////////////  one movie eka ganna   ////////////////////////
   if (!empty($_GET['mv_id'])) {
     // echo $_GET['mv_id'];
-    $__single__mv_url = 'https://api.themoviedb.org/3/movie/' . $_GET['mv_id'] . '?api_key=fe820d7cf8a922a22d399cad5db275cc';
+    echo $__type__m_t;
+    $__single__mv_url = 'https://api.themoviedb.org/3/'.$__type__m_t.'/'. $_GET['mv_id'] . '?api_key=fe820d7cf8a922a22d399cad5db275cc';
     $args = array(
       'headers' => array("Content-type" => "application/json")
     );
@@ -215,7 +218,6 @@ function  __mg__movie__cont()
           if ($one_mv_cat->name == $category->name) {
             $__cat__mv__name[] = $one_mv_cat->name;
             $__cat__mv__full[] = $one_mv_cat;
-          } else {
           }
         }
       }
@@ -232,7 +234,21 @@ function  __mg__movie__cont()
         $wpdocs_cat_id = wp_insert_category($__add__mv__cat);
         print("<pre>" . print_r($wpdocs_cat_id, true) . "</pre>");
       }
+
+      //get categary again to add post
+      $__re__categories = get_categories($args);
+      $__cat__mv__to_post = array();
+      foreach ($response->genres as $one_mv_cat) {
+        foreach ($__re__categories as $category) {
+          if ($one_mv_cat->name == $category->name) {
+            $__cat__mv__to_post[] = $one_mv_cat->id;
+          } 
+        }
+      }
+
+
       print("<pre>" . print_r($response, true) . "</pre>");
+      print("<pre>" . print_r($__cat__mv__to_post, true) . "</pre>");
     }
     echo $__single__mv_url;
     echo $response_code;
