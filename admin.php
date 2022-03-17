@@ -210,14 +210,15 @@ function  __mg__movie__cont()
         'style'       => 'list',
         'hide_empty'  => 0,
       );
+      $all_req_category = $response->genres;
       $categories = get_categories($args);
       $__cat__mv__name = array();
-      $__cat__mv__full = array();
-      foreach ($response->genres as $one_mv_cat) {
+      $equal__cat__id = array();
+      foreach ($all_req_category as $key =>$one_mv_cat) {
         foreach ($categories as $category) {
           if ($one_mv_cat->id == $category->id) {
-            $__cat__mv__name[] = $one_mv_cat->name;
-            $__cat__mv__full[] = $one_mv_cat;
+            $__cat__mv__name[] = $one_mv_cat;
+            $equal__cat__id[] = $one_mv_cat->id;
           }
         }
       }
