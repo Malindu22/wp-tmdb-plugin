@@ -21,4 +21,9 @@
 .m-1{
     margin: 10px;
 }
-
+.danger{
+    color: red;
+}
+.great{
+    color: green;
+}

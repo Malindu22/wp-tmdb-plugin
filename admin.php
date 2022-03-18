@@ -163,9 +163,9 @@ function  __mg__movie__cont()
           foreach ($__response_result as $mv) {
             echo '<div class="wrap">';
             if ($mv->poster_path) {
-              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
-              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
             }
             echo '</div>';
           }
@@ -174,9 +174,9 @@ function  __mg__movie__cont()
             echo '<div class="wrap">';
             if ($mv->poster_path) {
               echo'=>';
-              // echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
+              // echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
-              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
             }
             // 
             echo '</div>';
@@ -194,10 +194,10 @@ function  __mg__movie__cont()
 
 
   //////////////////////////////  one movie eka ganna   ////////////////////////
-  if (!empty($_GET['mv_id'])) {
+  if (!empty($_GET['mv_id']) && !empty($_GET['type'])) {
     // echo $_GET['mv_id'];
-    echo $__type__m_t;
-    $__single__mv_url = 'https://api.themoviedb.org/3/'.$__type__m_t.'/'. $_GET['mv_id'] . '?api_key=fe820d7cf8a922a22d399cad5db275cc';
+    // echo $__type__m_t;
+    $__single__mv_url = 'https://api.themoviedb.org/3/'.$_GET['type'].'/'. $_GET['mv_id'] . '?api_key=fe820d7cf8a922a22d399cad5db275cc';
     $args = array(
       'headers' => array("Content-type" => "application/json")
     );
@@ -205,6 +205,7 @@ function  __mg__movie__cont()
     $response_code = wp_remote_retrieve_response_message($result);
     $response = wp_remote_retrieve_body($result);
     $response = json_decode($response);
+    print("<pre>" . print_r($response, true) . "</pre>");
     if ($response_code == 'OK') {
       $args = array(
         'style'       => 'list',
@@ -214,45 +215,59 @@ function  __mg__movie__cont()
       $categories = get_categories($args);
       $__cat__mv__name = array();
       $equal__cat__id = array();
-      foreach ($all_req_category as $key =>$one_mv_cat) {
-        foreach ($categories as $category) {
-          if ($one_mv_cat->id == $category->id) {
+      foreach ($categories as $category) {
+        foreach ($all_req_category as $key =>$one_mv_cat ) {
+          if ($one_mv_cat->id == $category->description) {
             $__cat__mv__name[] = $one_mv_cat;
             $equal__cat__id[] = $one_mv_cat->id;
+            unset($all_req_category[$key]);
           }
         }
       }
-      foreach ($response->genres as $key => $object) {
-        if (!in_array($object->name, $__cat__mv__name)) {
+
+
+      if (!empty($all_req_category)) {
+        foreach ($all_req_category as $key => $object) {
           $__str_rpc = str_replace(' ', '-', $object->name);
           $__add__mv__cat = array(
-            'cat_ID' => $object->id,
             'cat_name' => $object->name,
-            'category_description' => 'Movie Categary',
+            'category_description' => $object->id,
             'category_nicename' => $__str_rpc,
             'category_parent' => ''
           );
-        }
         $wpdocs_cat_id = wp_insert_category($__add__mv__cat);
-        print("<pre>" . print_r($wpdocs_cat_id, true) . "</pre>");
+        // print("<pre>" . print_r($wpdocs_cat_id, true) . "</pre>");
+          if ($wpdocs_cat_id == 0) {
+            echo '"'.$object->name.'" Category Add failed <span class="danger"> <span class="dashicons dashicons-no"></span> </span>';
+          }else{
+            echo '"'.$object->name.'" Category Add success <span class="great"> <span class="dashicons dashicons-yes"></span> </span>';
+          }
+        }
       }
 
+      $_mv_img = 'https://image.tmdb.org/t/p/w92'.$response->poster_path;
+      $__description = 'short description';
+      $return_redda = media_sideload_image( $_mv_img, $__post_id, $__description,$src = 'id' );
+      // print("<pre>" . print_r($return_redda, true) . "</pre>");
+      echo $return_redda;
+
       //get categary again to add post
-      // $__re__categories = get_categories($args);
-      // $__cat__mv__to_post = array();
-      // foreach ($response->genres as $one_mv_cat) {
-      //   foreach ($__re__categories as $category) {
-      //     if ($one_mv_cat->name == $category->name) {
-      //       $__cat__mv__to_post[] = $one_mv_cat->id;
-      //     } 
-      //   }
-      // }
+      $__re__categories = get_categories($args);
+      $__cat_id__to_post = array();
+      foreach ($categories as $category) {
+        foreach ($response->genres as $key =>$one_genres ) {
+          if ($one_genres->id == $category->description) {
+            $__cat_id__to_post[] = $category->description;
+          }
+        }
+      }
 
 
-      print("<pre>" . print_r($response, true) . "</pre>");
-      print("<pre>" . print_r($__cat__mv__to_post, true) . "</pre>");
+      // print("<pre>" . print_r($__re__categories, true) . "</pre>");
+      // print("<pre>" . print_r($all_req_category, true) . "</pre>");
+      // print("<pre>" . print_r($__cat__mv__name, true) . "</pre>");
     }
-    echo $__single__mv_url;
+    // echo $__single__mv_url;
     echo $response_code;
   } else {
     echo 'none';
