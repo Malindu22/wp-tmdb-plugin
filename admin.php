@@ -245,7 +245,7 @@ function  __mg__movie__cont()
         }
       }
 
-      $_mv_img = 'https://image.tmdb.org/t/p/w92'.$response->poster_path;
+      $_mv_img = 'https://image.tmdb.org/t/p/w500'.$response->poster_path;
       $__description = 'short description';
       $return_redda = media_sideload_image( $_mv_img, $__post_id, $__description,$src = 'id' );
       // print("<pre>" . print_r($return_redda, true) . "</pre>");
@@ -261,6 +261,32 @@ function  __mg__movie__cont()
           }
         }
       }
+
+      if ($_GET['type'] == 'tv') {
+        $__cont = '';
+      }
+      if ($_GET['type'] == 'movie') {
+        $__cont = '';
+      }
+
+      global $user_ID;
+      $new_post = array(
+          'post_title' => $response->name,
+          'post_content' => $__cont,
+          'post_status' => 'publish',
+          'post_date' => date('Y-m-d H:i:s'),
+          'post_author' => $user_ID,
+          'post_type' => 'post',
+          'post_category' => $__cat_id__to_post
+      );
+      $post_id = wp_insert_post($new_post);
+
+      if( ! is_wp_error( $post_id ) ){
+        $ecc = update_post_meta( $post_id, '_thumbnail_id', $return_redda);
+        echo $ecc;
+      }
+
+       
 
 
       // print("<pre>" . print_r($__re__categories, true) . "</pre>");
