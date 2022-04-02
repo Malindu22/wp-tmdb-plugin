@@ -5,40 +5,33 @@ global $API_KEY;
 global $__mg__page;
 $__mg__page = 1;
 $API_KEY = get_option('_DB_Key');
-add_action('template_redirect', 'wpse149613_form_process');
+// add_action('template_redirect', 'wpse149613_form_process');
 ?>
 <div class="wrap">
-  <!-- Print the page title -->
-  <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-  <nav class="nav-tab-wrapper">
-    <a href="?page=admin.php" class="nav-tab <?php if ($__tab === null) : ?>nav-tab-active<?php endif; ?>">Import Tab</a>
-    <a href="?page=admin.php&tab=settings" class="nav-tab <?php if ($__tab === 'settings') : ?>nav-tab-active<?php endif; ?>">Settings</a>
-    <a href="?page=admin.php&tab=tools" class="nav-tab <?php if ($__tab === 'tools') : ?>nav-tab-active<?php endif; ?>">Tools</a>
-  </nav>
+    <!-- Print the page title -->
+    <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+    <nav class="nav-tab-wrapper">
+        <a href="?page=admin.php" class="nav-tab <?php if ($__tab === null) : ?>nav-tab-active<?php endif; ?>">Import
+            Tab</a>
+        <a href="?page=admin.php&tab=settings"
+            class="nav-tab <?php if ($__tab === 'settings') : ?>nav-tab-active<?php endif; ?>">Settings</a>
+        <a href="?page=admin.php&tab=info"
+            class="nav-tab <?php if ($__tab === 'info') : ?>nav-tab-active<?php endif; ?>">Info</a>
+    </nav>
 
-  <div class="tab-content">
-    <?php switch ($__tab):
+    <div class="tab-content">
+        <?php switch ($__tab):
       case 'settings':
         __mg__settings__cont();
         break;
-      case 'tools':
-        // $args = array(
-        //   'style'       => 'list',
-        //   'hide_empty'  => 0,
-        //   );
-        // $categories = get_categories($args);
-        // foreach ($categories as $category) :
-
-        //   echo  $category->term_id . ' ' . $category->name . '<br>';
-
-        // endforeach;
-        // echo 'Tools'.var_dump($categories);
+      case 'info':
+        
         break;
       default:
         __mg__movie__cont();
         break;
     endswitch; ?>
-  </div>
+    </div>
 </div>
 
 <?php
@@ -58,30 +51,29 @@ function __mg__settings__cont()
       add_option($__MG_act, $__act_key, $autoload = 'yes');
     }
     update_option($__MG_act, $__act_key, $autoload = 'yes');
-    // echo'<script> window.setTimeout( function() {
-    //   window.location.reload();
-    // }, 500); </script>';
     echo '<div class="updated"><p>Update successfull ! </p></div>';
   }
   $__MG_DB_key = get_option('_DB_Key');
   $__MG_key = get_option('_ACT_MG_Key');
 ?>
-  <div class="wrap">
+<div class="wrap">
     <h2>Settings</h2>
     <form method="post" action="?page=admin.php&tab=settings">
-      <div class="row">
-        <div class="p-3">
-          <lable class="p-r">TMDB Api Key : </lable>
-          <input value="<?php echo $__MG_DB_key ?>" class="regular-text code" type="text" name="tmdb_key" id="tmdb_key" />
+        <div class="row">
+            <div class="p-3">
+                <lable class="p-r">TMDB Api Key : </lable>
+                <input value="<?php echo $__MG_DB_key ?>" class="regular-text code" type="text" name="tmdb_key"
+                    id="tmdb_key" />
+            </div>
+            <div class="p-3">
+                <lable class="p-r">Plugin Activation key : </lable>
+                <input value="<?php echo $__MG_key ?>" class="regular-text code" type="text" id="act_key"
+                    name="act_key" />
+            </div>
         </div>
-        <div class="p-3">
-          <lable class="p-r">Plugin Activation key : </lable>
-          <input value="<?php echo $__MG_key ?>" class="regular-text code" type="text" id="act_key" name="act_key" />
-        </div>
-      </div>
-      <input type="submit" value="Save Changes" name="submit" id="submit" class="button button-primary" />
+        <input type="submit" value="Save Changes" name="submit" id="submit" class="button button-primary" />
     </form>
-  </div>
+</div>
 <?php
 }
 
@@ -97,32 +89,34 @@ function  __mg__movie__cont()
     $__mg__page = $_POST['__mo__page'] + 1;
   }
 ?>
-  <div class="wrap">
+<div class="wrap">
     <h2>Import</h2>
     <form method="post" id="mov__form" name='mov__form' action="?page=admin.php">
-      <div class="row">
-        <div class="p-3">
-          <select id="__mv__select__op__">
-            <option value="mov">Movie</option>
-            <option value="tv">Tv show</option>
-          </select>
-        </div>
-        <!-- <div class="p-3">
+        <div class="row">
+            <div class="p-3">
+                <select id="__mv__select__op__">
+                    <option value="mov">Movie</option>
+                    <option value="tv">Tv show</option>
+                </select>
+            </div>
+            <!-- <div class="p-3">
           <input type="text" placeholder="Year" name="__mov__year" id="__mov__year">
         </div> -->
-        <div class="p-3">
-          <input type="text" placeholder="Search Name" name="__mo__name" id="__mo__name">
+            <div class="p-3">
+                <input type="text" placeholder="Search Name" name="__mo__name" id="__mo__name">
+            </div>
+            <div class="p-3">
+                <input type="submit" value="Search" name="submit" id="submit" class="button button-primary" />
+                <input type="hidden" value="<?php echo $__mg__page ?>" name="__mo__page" id="__mo__page"
+                    class="button button-primary" />
+            </div>
+            <div class="p-3">
+                <a href="javascript:{}" onclick="document.getElementById('submit').click();"><button
+                        class="button button-primary"><?php echo ($__mg__page == 0) ?  'Load'  : 'Next'; ?></button></a>
+            </div>
         </div>
-        <div class="p-3">
-          <input type="submit" value="Search" name="submit" id="submit" class="button button-primary" />
-          <input type="hidden" value="<?php echo $__mg__page ?>" name="__mo__page" id="__mo__page" class="button button-primary" />
-        </div>
-        <div class="p-3">
-          <a href="javascript:{}" onclick="document.getElementById('submit').click();"><button class="button button-primary"><?php echo ($__mg__page == 0) ?  'Load'  : 'Next'; ?></button></a>
-        </div>
-      </div>
     </form>
-  </div>
+</div>
 
 <?php
     
@@ -133,8 +127,6 @@ function  __mg__movie__cont()
     if (!empty($_POST['__mo__name'])) {
       $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'] .'?api_key='.$API_KEY.'&language=en-US&external_source=imdb_id';
     }
-    echo $__popular_mv_url;
-    echo $__popular_mv_url;
     $__header_args = array(
       'headers' => array("Content-type" => "application/json")
     );
@@ -143,10 +135,10 @@ function  __mg__movie__cont()
     $response = wp_remote_retrieve_body($result);
     $response = json_decode($response);
     if ($response_code == 'OK') {
-      print("<pre>".print_r($response,true)."</pre>");
       $__type__m_t = 'movie';
         echo '<div class="d-flex-wrap">';
         if (!property_exists($response,'results')) {
+          echo 'search karala';
           if (property_exists($response,'movie_results') &&  !empty($response->movie_results)) {
             $__response_result = $response->movie_results;
           }else if(property_exists($response,'tv_results') &&  !empty($response->tv_results)) {
@@ -165,11 +157,17 @@ function  __mg__movie__cont()
             }
             echo '</div>';
           }
-        }else{
-          foreach ($response->results as $mv) {
+        }else{ 
+          echo 'thani eka click karala (serch nokara)';
+          foreach ($response->results as $mv) { 
+            if ($mv->media_type == 'movie') {
+              $__type__m_t = 'movie';echo 'movie ekak';
+            }else{
+              echo 'tv ekak';
+              $__type__m_t = 'tv';
+            }
             echo '<div class="wrap">';
             if ($mv->poster_path) {
-              echo'=>';
               echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
               echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
@@ -187,7 +185,6 @@ function  __mg__movie__cont()
   //////////////////////////////  one movie eka ganna   ////////////////////////
   if (!empty($_GET['mv_id']) && !empty($_GET['type'])) {
     global $API_KEY;
-    // echo $__type__m_t;
     $__single__mv_url = 'https://api.themoviedb.org/3/'.$_GET['type'].'/'. $_GET['mv_id'] . '?api_key='.$API_KEY.'';
     $args = array(
       'headers' => array("Content-type" => "application/json")
@@ -196,7 +193,6 @@ function  __mg__movie__cont()
     $response_code = wp_remote_retrieve_response_message($result);
     $response = wp_remote_retrieve_body($result);
     $response = json_decode($response);
-    print("<pre>" . print_r($response, true) . "</pre>");
     if ($response_code == 'OK') {
       $args = array(
         'style'       => 'list',
@@ -228,9 +224,9 @@ function  __mg__movie__cont()
           );
         $wpdocs_cat_id = wp_insert_category($__add__mv__cat);
           if ($wpdocs_cat_id == 0) {
-            echo '"'.$object->name.'" Category Add failed <span class="danger"> <span class="dashicons dashicons-no"></span> </span><br>';
+            echo '<div style="font-size:20px">"'.$object->name.'" Category Add failed <span class="danger"> <span class="dashicons dashicons-no"></span> </span></div><br>';
           }else{
-            echo '"'.$object->name.'" Category Add success <span class="great"> <span class="dashicons dashicons-yes"></span> </span><br>';
+            echo '<div style="font-size:20px">"'.$object->name.'" Category Add success <span class="great"> <span class="dashicons dashicons-yes"></span> </span></div><br>';
           }
         }
       }
@@ -291,7 +287,7 @@ function  __mg__movie__cont()
                   </tr>
                   <tr>
                   <td><b>Vote Average</b></td>
-                  <td>[rating stars='". $response->vote_average."']</td>
+                  <td>[rating stars='". number_format($response->vote_average / 2 , 1)."']</td>
                   </tr>
                   <tr>
                   <td><b>Vote Count</b></td>
@@ -306,29 +302,28 @@ function  __mg__movie__cont()
                   <!-- wp:paragraph {'fontSize':'small'} -->
                   <p class='has-small-font-size'>". $response->overview."</p>
                   <!-- /wp:paragraph -->
-
                   <table style='height: 246px;' width='662'>
                   <tbody>
                   <tr></tr>
                   <tr>
-                  <td> <b>First Air Date</b></td>
+                  <td> <b>Release Date</b></td>
                   <td>". $response->release_date ."</td>
                   </tr>
                   <tr>
-                  <td> <b>First Air Date</b></td>
+                  <td> <b>Tag Line</b></td>
                   <td>". $response->tagline ."</td>
                   </tr>
                   <tr>
-                  <td><b>Number of Episodes</b></td>
+                  <td><b>Runtime</b></td>
                   <td>". $response->runtime."</td>
                   </tr>
                   <tr>
                   <td><b>Original Name</b></td>
-                  <td>". $response->original_name."</td>
+                  <td>". $response->original_title ."</td>
                   </tr>
                   <tr>
                   <td><b>Original Language</b></td>
-                  <td>". $response->original_language."</td>
+                  <td>". $response->original_language ."</td>
                   </tr>
                   <tr>
                   <td><b>Popularity</b></td>
@@ -336,49 +331,7 @@ function  __mg__movie__cont()
                   </tr>
                   <tr>
                   <td><b>Vote Average</b></td>
-                  <td>[rating stars='". $response->vote_average."']</td>
-                  </tr>
-                  <tr>
-                  <td><b>Vote Count</b></td>
-                  <td>". $response->vote_count."</td>
-                  </tr>
-                  </tbody>
-                  </table>";$__cont ="<!-- wp:heading {'level':3} --><h3>Overview :</h3>
-                  <!-- /wp:heading -->
-                  <!-- wp:paragraph {'fontSize':'small'} -->
-                  <p class='has-small-font-size'>". $response->overview."</p>
-                  <!-- /wp:paragraph -->
-
-                  <table style='height: 246px;' width='662'>
-                  <tbody>
-                  <tr></tr>
-                  <tr>
-                  <td> <b>First Air Date</b></td>
-                  <td>". $response->release_date ."</td>
-                  </tr>
-                  <tr>
-                  <td> <b>First Air Date</b></td>
-                  <td>". $response->tagline ."</td>
-                  </tr>
-                  <tr>
-                  <td><b>Number of Episodes</b></td>
-                  <td>". $response->runtime."</td>
-                  </tr>
-                  <tr>
-                  <td><b>Original Name</b></td>
-                  <td>". $response->original_name."</td>
-                  </tr>
-                  <tr>
-                  <td><b>Original Language</b></td>
-                  <td>". $response->original_language."</td>
-                  </tr>
-                  <tr>
-                  <td><b>Popularity</b></td>
-                  <td>". $response->popularity."</td>
-                  </tr>
-                  <tr>
-                  <td><b>Vote Average</b></td>
-                  <td>[rating stars='". $response->vote_average."']</td>
+                  <td>[rating stars='". number_format($response->vote_average / 2 , 1)."']</td>
                   </tr>
                   <tr>
                   <td><b>Vote Count</b></td>
@@ -390,7 +343,7 @@ function  __mg__movie__cont()
 
       global $user_ID;
       $new_post = array(
-          'post_title' => $response->name,
+          'post_title' => $response->name ? $response->name : $response->title,
           'post_content' => $__cont,
           'post_status' => 'publish',
           'post_date' => date('Y-m-d H:i:s'),
@@ -401,12 +354,18 @@ function  __mg__movie__cont()
       $post_id = wp_insert_post($new_post);
       if( ! is_wp_error( $post_id ) ){
         $ecc = update_post_meta( $post_id, '_thumbnail_id', $return__image_id);
-        echo $ecc;
+        echo '<div class="updated"><p> Post Add successfull ! </p></div>';
+      }else{
+        echo '<div class="error"><p> Post Add successfull ! </p></div>';
       }
+          // echo'<script> window.setTimeout( function() {
+          //   window.location.reload();
+          // }, 3000); </script>';
+    }else{
+        echo '<div> <h4 style="text-align:center"> No Data Found</h4> </div>';
     }
-    echo $response_code;
   } else {
-    echo 'none';
+    
   }
 }
 

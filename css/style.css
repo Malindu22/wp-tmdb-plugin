@@ -27,3 +27,8 @@
 .great{
     color: green;
 }
+
+.text-padding{
+    padding: 50px 0px 0px 500px;
+    font-size: 25px;
+}
