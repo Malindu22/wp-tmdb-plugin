@@ -177,7 +177,7 @@ function  __mg__movie__cont()
             echo '<div class="wrap">';
             if ($mv->poster_path) {
               echo'=>';
-              // echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
               echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
             }
@@ -185,15 +185,10 @@ function  __mg__movie__cont()
             echo '</div>';
           }
         }
-      
-      // echo $_POST['__mov__year'];
-      echo $_POST['__mo__name'];
-      echo $__popular_mv_url;
       echo '</div>';
     }
     
   }
-  // $selectOption = $_POST['taskOption'];
 
 
   //////////////////////////////  one movie eka ganna   ////////////////////////
@@ -239,11 +234,10 @@ function  __mg__movie__cont()
             'category_parent' => ''
           );
         $wpdocs_cat_id = wp_insert_category($__add__mv__cat);
-        // print("<pre>" . print_r($wpdocs_cat_id, true) . "</pre>");
           if ($wpdocs_cat_id == 0) {
-            echo '"'.$object->name.'" Category Add failed <span class="danger"> <span class="dashicons dashicons-no"></span> </span>';
+            echo '"'.$object->name.'" Category Add failed <span class="danger"> <span class="dashicons dashicons-no"></span> </span><br>';
           }else{
-            echo '"'.$object->name.'" Category Add success <span class="great"> <span class="dashicons dashicons-yes"></span> </span>';
+            echo '"'.$object->name.'" Category Add success <span class="great"> <span class="dashicons dashicons-yes"></span> </span><br>';
           }
         }
       }
@@ -251,8 +245,6 @@ function  __mg__movie__cont()
       $_mv_img = 'https://image.tmdb.org/t/p/w500'.$response->poster_path;
       $__description = 'short description';
       $return__image_id = media_sideload_image( $_mv_img, $__post_id, $__description,$src = 'id' );
-      // print("<pre>" . print_r($return__image_id, true) . "</pre>");
-      // echo $return__image_id;
 
       //get categary again to add post
       $__re__categories = get_categories($args);
@@ -413,21 +405,12 @@ function  __mg__movie__cont()
           'post_type' => 'post',
           'post_category' => $__cat_id__to_post,
       );
-      // $post_id = wp_insert_post($new_post);
-      // wp_set_post_terms( $post_id, $__cat_id__to_post, 'category', true );
+      $post_id = wp_insert_post($new_post);
       if( ! is_wp_error( $post_id ) ){
         $ecc = update_post_meta( $post_id, '_thumbnail_id', $return__image_id);
         echo $ecc;
       }
-
-       
-
-
-      // print("<pre>" . print_r($__re__categories, true) . "</pre>");
-      // print("<pre>" . print_r($all_req_category, true) . "</pre>");
-      // print("<pre>" . print_r($__cat__mv__name, true) . "</pre>");
     }
-    // echo $__single__mv_url;
     echo $response_code;
   } else {
     echo 'none';
