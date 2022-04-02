@@ -152,7 +152,7 @@ function  __mg__movie__cont()
             if ($mv->poster_path) {
               echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
-              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="'.plugin_dir_path( __FILE__ ) . '/images/not-found.jpg'.'"/></a>';
             }
             echo '</div>';
           }
@@ -167,7 +167,7 @@ function  __mg__movie__cont()
             if ($mv->poster_path) {
               echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="https://image.tmdb.org/t/p/w92/' . $mv->poster_path . '"/></a>';
             }else{
-              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="../wp-content/plugins/wp-plugin/not-found.jpg"/></a>';
+              echo '<a href="?page=admin.php&mv_id=' . $mv->id . '&type='.$__type__m_t.'" /><img src="'.plugin_dir_path( __FILE__ ) . '/images/not-found.jpg'.'"/></a>';
             }
             // 
             echo '</div>';
