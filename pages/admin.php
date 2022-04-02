@@ -359,7 +359,6 @@ function  __mg__movie__cont()
         echo '<div> <h4 style="text-align:center"> No Data Found</h4> </div>';
     }
   } else {
-    
   }
 }
 
