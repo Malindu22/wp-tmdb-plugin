@@ -138,7 +138,6 @@ function  __mg__movie__cont()
       $__type__m_t = 'movie';
         echo '<div class="d-flex-wrap">';
         if (!property_exists($response,'results')) {
-          echo 'search karala';
           if (property_exists($response,'movie_results') &&  !empty($response->movie_results)) {
             $__response_result = $response->movie_results;
           }else if(property_exists($response,'tv_results') &&  !empty($response->tv_results)) {
@@ -158,12 +157,10 @@ function  __mg__movie__cont()
             echo '</div>';
           }
         }else{ 
-          echo 'thani eka click karala (serch nokara)';
           foreach ($response->results as $mv) { 
             if ($mv->media_type == 'movie') {
-              $__type__m_t = 'movie';echo 'movie ekak';
+              $__type__m_t = 'movie';
             }else{
-              echo 'tv ekak';
               $__type__m_t = 'tv';
             }
             echo '<div class="wrap">';
@@ -358,9 +355,6 @@ function  __mg__movie__cont()
       }else{
         echo '<div class="error"><p> Post Add successfull ! </p></div>';
       }
-          // echo'<script> window.setTimeout( function() {
-          //   window.location.reload();
-          // }, 3000); </script>';
     }else{
         echo '<div> <h4 style="text-align:center"> No Data Found</h4> </div>';
     }
