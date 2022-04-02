@@ -3,9 +3,8 @@ $default__tab = null;
 $__tab = isset($_GET['tab']) ? $_GET['tab'] : $default__tab;
 global $API_KEY;
 global $__mg__page;
-$API_KEY = 'fe820d7cf8a922a22d399cad5db275cc';
 $__mg__page = 1;
-// $API_KEY = get_option($tmdb);
+$API_KEY = get_option('_DB_Key');
 add_action('template_redirect', 'wpse149613_form_process');
 ?>
 <div class="wrap">
@@ -126,19 +125,23 @@ function  __mg__movie__cont()
   </div>
 
 <?php
+    
+    global $API_KEY;
 
   if (isset($_POST['__mo__name'])) {
     // https://api.themoviedb.org/3/search/movie?api_key=ssss&query=query&page=1&include_adult=false&region=region&year=year&primary_release_year=primary_release_year
     // https://api.themoviedb.org/3/search/tv?api_key=ssss&page=1&include_adult=false
     // https://api.themoviedb.org/3/search/multi?api_key=ssss&query=query&page=1&include_adult=false&region=region
-    // $url = 'https://api.themoviedb.org/3/search/movie?api_key=fe820d7cf8a922a22d399cad5db275cc&query=Jack+Reacher';
-    $__popular_mv_url = 'https://api.themoviedb.org/3/trending/all/day?api_key=fe820d7cf8a922a22d399cad5db275cc' . '&page=' . $__mg__page;
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/search/multi?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&query='.$_POST['__mo__name'] . '&page=' . $__mg__page.'&include_adult=true&language=ta';
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'].'?api_key=fe820d7cf8a922a22d399cad5db275cc&external_source=imdb_id';
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/discover/movie?api_key=fe820d7cf8a922a22d399cad5db275cc'.'&with_original_language=te&year=2019' . '&page=' . $__mg__page;
+    // $url = 'https://api.themoviedb.org/3/search/movie?api_key='.$API_KEY.'&query=Jack+Reacher';
+    $__popular_mv_url = 'https://api.themoviedb.org/3/trending/all/day?api_key='.$API_KEY.'' . '&page=' . $__mg__page;
+    // $__popular_mv_url = 'https://api.themoviedb.org/3/search/multi?api_key='.$API_KEY.''.'&query='.$_POST['__mo__name'] . '&page=' . $__mg__page.'&include_adult=true&language=ta';
+    // $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'].'?api_key='.$API_KEY.'&external_source=imdb_id';
+    // $__popular_mv_url = 'https://api.themoviedb.org/3/discover/movie?api_key='.$API_KEY.''.'&with_original_language=te&year=2019' . '&page=' . $__mg__page;
     if (!empty($_POST['__mo__name'])) {
-      $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'] .'?api_key=fe820d7cf8a922a22d399cad5db275cc&language=en-US&external_source=imdb_id';
+      $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'] .'?api_key='.$API_KEY.'&language=en-US&external_source=imdb_id';
     }
+    echo $__popular_mv_url;
+    echo $__popular_mv_url;
     $__header_args = array(
       'headers' => array("Content-type" => "application/json")
     );
@@ -147,7 +150,7 @@ function  __mg__movie__cont()
     $response = wp_remote_retrieve_body($result);
     $response = json_decode($response);
     if ($response_code == 'OK') {
-      // print("<pre>".print_r($response,true)."</pre>");
+      print("<pre>".print_r($response,true)."</pre>");
       $__type__m_t = 'movie';
         echo '<div class="d-flex-wrap">';
         if (!property_exists($response,'results')) {
@@ -195,9 +198,9 @@ function  __mg__movie__cont()
 
   //////////////////////////////  one movie eka ganna   ////////////////////////
   if (!empty($_GET['mv_id']) && !empty($_GET['type'])) {
-    // echo $_GET['mv_id'];
+    global $API_KEY;
     // echo $__type__m_t;
-    $__single__mv_url = 'https://api.themoviedb.org/3/'.$_GET['type'].'/'. $_GET['mv_id'] . '?api_key=fe820d7cf8a922a22d399cad5db275cc';
+    $__single__mv_url = 'https://api.themoviedb.org/3/'.$_GET['type'].'/'. $_GET['mv_id'] . '?api_key='.$API_KEY.'';
     $args = array(
       'headers' => array("Content-type" => "application/json")
     );
@@ -247,9 +250,9 @@ function  __mg__movie__cont()
 
       $_mv_img = 'https://image.tmdb.org/t/p/w500'.$response->poster_path;
       $__description = 'short description';
-      $return_redda = media_sideload_image( $_mv_img, $__post_id, $__description,$src = 'id' );
-      // print("<pre>" . print_r($return_redda, true) . "</pre>");
-      echo $return_redda;
+      $return__image_id = media_sideload_image( $_mv_img, $__post_id, $__description,$src = 'id' );
+      // print("<pre>" . print_r($return__image_id, true) . "</pre>");
+      // echo $return__image_id;
 
       //get categary again to add post
       $__re__categories = get_categories($args);
@@ -257,16 +260,147 @@ function  __mg__movie__cont()
       foreach ($categories as $category) {
         foreach ($response->genres as $key =>$one_genres ) {
           if ($one_genres->id == $category->description) {
-            $__cat_id__to_post[] = $category->description;
+            array_push($__cat_id__to_post,$category->term_id);
           }
         }
-      }
+      } 
 
+      //////////////////////////// saved content of post //////////////////////////////////////
       if ($_GET['type'] == 'tv') {
-        $__cont = '';
+        $__cont ="<!-- wp:heading {'level':3} --><h3>Overview :</h3>
+                  <!-- /wp:heading -->
+                  <!-- wp:paragraph {'fontSize':'small'} -->
+                  <p class='has-small-font-size'>". $response->overview."</p>
+                  <!-- /wp:paragraph -->
+
+                  <table style='height: 246px;' width='662'>
+                  <tbody>
+                  <tr></tr>
+                  <tr>
+                  <td> <b>First Air Date</b></td>
+                  <td>". $response->first_air_date ."</td>
+                  </tr>
+                  <tr>
+                  <td> <b>Last Air Date</b></td>
+                  <td>". $response->last_air_date."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Number of Seasons </b></td>
+                  <td>". $response->number_of_seasons."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Number of Episodes</b></td>
+                  <td>". $response->number_of_episodes."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Original Name</b></td>
+                  <td>". $response->original_name."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Original Language</b></td>
+                  <td>". $response->original_language."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Popularity</b></td>
+                  <td>". $response->popularity."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Vote Average</b></td>
+                  <td>[rating stars='". $response->vote_average."']</td>
+                  </tr>
+                  <tr>
+                  <td><b>Vote Count</b></td>
+                  <td>". $response->vote_count."</td>
+                  </tr>
+                  </tbody>
+                  </table>";
       }
       if ($_GET['type'] == 'movie') {
-        $__cont = '';
+        $__cont ="<!-- wp:heading {'level':3} --><h3>Overview :</h3>
+                  <!-- /wp:heading -->
+                  <!-- wp:paragraph {'fontSize':'small'} -->
+                  <p class='has-small-font-size'>". $response->overview."</p>
+                  <!-- /wp:paragraph -->
+
+                  <table style='height: 246px;' width='662'>
+                  <tbody>
+                  <tr></tr>
+                  <tr>
+                  <td> <b>First Air Date</b></td>
+                  <td>". $response->release_date ."</td>
+                  </tr>
+                  <tr>
+                  <td> <b>First Air Date</b></td>
+                  <td>". $response->tagline ."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Number of Episodes</b></td>
+                  <td>". $response->runtime."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Original Name</b></td>
+                  <td>". $response->original_name."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Original Language</b></td>
+                  <td>". $response->original_language."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Popularity</b></td>
+                  <td>". $response->popularity."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Vote Average</b></td>
+                  <td>[rating stars='". $response->vote_average."']</td>
+                  </tr>
+                  <tr>
+                  <td><b>Vote Count</b></td>
+                  <td>". $response->vote_count."</td>
+                  </tr>
+                  </tbody>
+                  </table>";$__cont ="<!-- wp:heading {'level':3} --><h3>Overview :</h3>
+                  <!-- /wp:heading -->
+                  <!-- wp:paragraph {'fontSize':'small'} -->
+                  <p class='has-small-font-size'>". $response->overview."</p>
+                  <!-- /wp:paragraph -->
+
+                  <table style='height: 246px;' width='662'>
+                  <tbody>
+                  <tr></tr>
+                  <tr>
+                  <td> <b>First Air Date</b></td>
+                  <td>". $response->release_date ."</td>
+                  </tr>
+                  <tr>
+                  <td> <b>First Air Date</b></td>
+                  <td>". $response->tagline ."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Number of Episodes</b></td>
+                  <td>". $response->runtime."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Original Name</b></td>
+                  <td>". $response->original_name."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Original Language</b></td>
+                  <td>". $response->original_language."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Popularity</b></td>
+                  <td>". $response->popularity."</td>
+                  </tr>
+                  <tr>
+                  <td><b>Vote Average</b></td>
+                  <td>[rating stars='". $response->vote_average."']</td>
+                  </tr>
+                  <tr>
+                  <td><b>Vote Count</b></td>
+                  <td>". $response->vote_count."</td>
+                  </tr>
+                  </tbody>
+                  </table>";
       }
 
       global $user_ID;
@@ -277,12 +411,12 @@ function  __mg__movie__cont()
           'post_date' => date('Y-m-d H:i:s'),
           'post_author' => $user_ID,
           'post_type' => 'post',
-          'post_category' => $__cat_id__to_post
+          'post_category' => $__cat_id__to_post,
       );
-      $post_id = wp_insert_post($new_post);
-
+      // $post_id = wp_insert_post($new_post);
+      // wp_set_post_terms( $post_id, $__cat_id__to_post, 'category', true );
       if( ! is_wp_error( $post_id ) ){
-        $ecc = update_post_meta( $post_id, '_thumbnail_id', $return_redda);
+        $ecc = update_post_meta( $post_id, '_thumbnail_id', $return__image_id);
         echo $ecc;
       }
 
