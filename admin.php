@@ -134,9 +134,6 @@ function  __mg__movie__cont()
     // https://api.themoviedb.org/3/search/multi?api_key=ssss&query=query&page=1&include_adult=false&region=region
     // $url = 'https://api.themoviedb.org/3/search/movie?api_key='.$API_KEY.'&query=Jack+Reacher';
     $__popular_mv_url = 'https://api.themoviedb.org/3/trending/all/day?api_key='.$API_KEY.'' . '&page=' . $__mg__page;
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/search/multi?api_key='.$API_KEY.''.'&query='.$_POST['__mo__name'] . '&page=' . $__mg__page.'&include_adult=true&language=ta';
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'].'?api_key='.$API_KEY.'&external_source=imdb_id';
-    // $__popular_mv_url = 'https://api.themoviedb.org/3/discover/movie?api_key='.$API_KEY.''.'&with_original_language=te&year=2019' . '&page=' . $__mg__page;
     if (!empty($_POST['__mo__name'])) {
       $__popular_mv_url = 'https://api.themoviedb.org/3/find/'.$_POST['__mo__name'] .'?api_key='.$API_KEY.'&language=en-US&external_source=imdb_id';
     }
