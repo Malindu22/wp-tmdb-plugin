@@ -22,13 +22,13 @@ $API_KEY = get_option('_DB_Key');
     <div class="tab-content">
         <?php switch ($__tab):
       case 'settings':
-        __mg__settings__cont();
+//         __mg__settings__cont();
         break;
       case 'info':
         
         break;
       default:
-        __mg__movie__cont();
+//         __mg__movie__cont();
         break;
     endswitch; ?>
     </div>
